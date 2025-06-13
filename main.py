@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Sahte imghdr dosyasını yol olarak ekliyoruz
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from telegram.ext import Updater, MessageHandler, Filters
 import threading
 from discord_bot import run_discord_bot, send_to_discord
