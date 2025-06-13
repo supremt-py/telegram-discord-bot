@@ -1,9 +1,15 @@
+import sys
+import os
 from dotenv import load_dotenv
-load_dotenv()
 from telegram.ext import Updater, MessageHandler, Filters
 import threading
 from discord_bot import run_discord_bot, send_to_discord
 import asyncio
+
+# Sahte imghdr dosyasını yol olarak ekliyoruz
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+load_dotenv()
 
 TELEGRAM_TOKEN = '7504590949:AAGF-8ac2Q7gsxGxi6mfJ9zG04oURlzMKr4'
 
