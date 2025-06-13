@@ -7,7 +7,7 @@ def forward_channel_post(update, context):
     if update.channel_post:
         text = update.channel_post.text or update.channel_post.caption or "(Medyalı mesaj)"
         print("Telegram mesajı:", text)
-        asyncio.run(send_to_discord(text))
+        asyncio.create_task(send_to_discord(text))
 
 def start_telegram_bot():
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
