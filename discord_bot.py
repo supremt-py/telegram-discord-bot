@@ -1,8 +1,12 @@
 import discord
 import asyncio
+import os
+from dotenv import load_dotenv
 
-DISCORD_TOKEN = 'MTM4MzA2NTYzNDc0MDUwMjU2OA.GtkoL0.oBa8ziGojW7D3iLMgx_AvfhVzl00SPiiNAUZ2E'
-CHANNEL_ID = int('1336869450640523374')  # sadece rakam olacak
+load_dotenv()
+
+DISCORD_TOKEN = os.getenv("MTM4MzA2NTYzNDc0MDUwMjU2OA.GtkoL0.oBa8ziGojW7D3iLMgx_AvfhVzl00SPiiNAUZ2E")
+CHANNEL_ID = int(os.getenv("1336869450640523374"))
 
 client = discord.Client(intents=discord.Intents.default())
 
