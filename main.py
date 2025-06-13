@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 from telegram.ext import Updater, MessageHandler, Filters
 import threading
 from discord_bot import run_discord_bot, send_to_discord
