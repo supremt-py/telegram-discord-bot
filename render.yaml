@@ -3,6 +3,4 @@ services:
     name: telegram-discord-bot
     env: docker
     plan: starter
-    repo: https://github.com/supremt-py/telegram-discord-bot
-    branch: main
     autoDeploy: true
