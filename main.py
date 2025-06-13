@@ -1,17 +1,17 @@
-import sys
 import os
+import sys
 from dotenv import load_dotenv
+
+# .env dosyasını yükle
+load_dotenv()
+
 from telegram.ext import Updater, MessageHandler, Filters
 import threading
 from discord_bot import run_discord_bot, send_to_discord
 import asyncio
 
-# Sahte imghdr dosyasını yol olarak ekliyoruz
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-load_dotenv()
-
-TELEGRAM_TOKEN = '7504590949:AAGF-8ac2Q7gsxGxi6mfJ9zG04oURlzMKr4'
+# Ortam değişkenlerinden token'ları al
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 def forward_channel_post(update, context):
     if update.channel_post:
@@ -19,8 +19,10 @@ def forward_channel_post(update, context):
         print("Telegram mesajı:", text)
         asyncio.run(send_to_discord(text))
 
+# Discord botunu ayrı bir thread'de başlat
 threading.Thread(target=run_discord_bot).start()
 
+# Telegram botunu başlat
 updater = Updater(TELEGRAM_TOKEN, use_context=True)
 dp = updater.dispatcher
 dp.add_handler(MessageHandler(Filters.all, forward_channel_post))
