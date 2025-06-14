@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 intents = discord.Intents.default()
+intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 telegram_to_discord = {}
@@ -11,7 +12,7 @@ telegram_to_discord = {}
 async def on_ready():
     print(f"Discord bot aktif: {bot.user}")
 
-async def send_to_discord_file(file_path=None, text=""):
+async def send_to_discord(content, file_path=None):
     channel_id = int(os.getenv("DISCORD_CHANNEL_ID"))
     channel = bot.get_channel(channel_id)
     if not channel:
@@ -22,9 +23,9 @@ async def send_to_discord_file(file_path=None, text=""):
         if file_path:
             with open(file_path, "rb") as f:
                 discord_file = discord.File(f)
-                await channel.send(content=text, file=discord_file)
+                await channel.send(content, file=discord_file)
         else:
-            await channel.send(content=text)
+            await channel.send(content)
     except Exception as e:
         print(f"Discord'a mesaj gönderilirken hata oluştu: {e}")
 
