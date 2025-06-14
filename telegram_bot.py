@@ -6,19 +6,13 @@ from discord_runner import send_to_discord
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.channel_post:
         text = update.channel_post.text or update.channel_post.caption or "(Medyalı mesaj)"
+        msg_id = update.channel_post.message_id
         print("Telegram mesajı:", text)
-        await send_to_discord(text)
+        await send_to_discord(text, telegram_msg_id=msg_id)
 
-async def start_telegram_bot():
+def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
-
-    # Sadece kanal mesajlarını dinle!
-    app.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, forward_channel_post))
-
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
-    await app.updater.idle()
+    app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
+    app.run_polling()
