@@ -1,5 +1,2 @@
-python-telegram-bot==20.7
+python-telegram-bot==20.8
 discord.py==2.3.2
-python-dotenv
-langdetect
-deep-translator==1.11.4
