@@ -1,20 +1,22 @@
 import os
-from telegram import Update
+from telegram import Update, InputFile
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
-from discord_runner import send_to_discord
+from discord_runner import send_to_discord_file
 
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.channel_post:
-        text = update.channel_post.text or update.channel_post.caption or "(Medyalı mesaj)"
-        print("Telegram mesajı:", text)
-        await send_to_discord(text)
+    message = update.channel_post
+    if not message:
+        return
 
-async def start_telegram_bot():
-    print("Telegram bot başlatılıyor...")
-    token = os.getenv("TELEGRAM_TOKEN")
-    app = ApplicationBuilder().token(token).build()
-    app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
-    await app.updater.wait()  # ❗ Event loop'u biz yönetiyoruz
+    if message.photo:  # Fotoğraf varsa
+        file_id = message.photo[-1].file_id  # En yüksek çözünürlükteki fotoğraf
+        file = await context.bot.get_file(file_id)
+        file_path = "/tmp/temp_photo.jpg"
+        await file.download_to_drive(file_path)
+        caption = message.caption or "Fotoğraf"
+        print("Telegram mesajı: [Fotoğraf] " + caption)
+        await send_to_discord_file(file_path, caption)
+
+    elif message.text:
+        print("Telegram mesajı:", message.text)
+        await send_to_discord_file(None, message.text)
