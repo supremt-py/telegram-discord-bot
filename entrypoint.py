@@ -1,14 +1,13 @@
-import threading
-import os
+import asyncio
 from telegram_bot import start_telegram_bot
-from discord_runner import bot
+from discord_runner import start_discord_bot
 
-# Discord botunu ayrı bir thread'de başlat
-discord_token = os.getenv("DISCORD_TOKEN")
-if not discord_token:
-    print("HATA: DISCORD_TOKEN tanımlı değil!")
-else:
-    threading.Thread(target=bot.run, args=(discord_token,)).start()
+async def main():
+    # Discord botunu arka planda başlat
+    asyncio.create_task(start_discord_bot())
+    
+    # Telegram polling'i ayrı bir thread olarak çalıştır
+    await asyncio.to_thread(start_telegram_bot)
 
-# Telegram botunu başlat
-start_telegram_bot()
+if __name__ == "__main__":
+    asyncio.run(main())
