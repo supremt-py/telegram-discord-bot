@@ -5,9 +5,9 @@ from discord_runner import start_discord_bot
 async def main():
     # Discord botunu arka planda başlat
     asyncio.create_task(start_discord_bot())
-    
-    # Telegram polling'i ayrı bir thread olarak çalıştır
-    await asyncio.to_thread(start_telegram_bot)
+
+    # Telegram botunu aynı event loop içinde çalıştır
+    await start_telegram_bot()
 
 if __name__ == "__main__":
     asyncio.run(main())
