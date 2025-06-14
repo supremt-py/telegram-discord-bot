@@ -7,7 +7,7 @@ async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYP
     if update.channel_post:
         text = update.channel_post.text or update.channel_post.caption or "(Medyalı mesaj)"
         print("Telegram mesajı:", text)
-        await send_to_discord(text)
+        asyncio.create_task(send_to_discord(text))  # En güvenlisi
 
 def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
