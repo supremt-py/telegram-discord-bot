@@ -9,11 +9,11 @@ async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYP
         text = update.channel_post.text or update.channel_post.caption or "(Medyalı mesaj)"
         msg_id = update.channel_post.message_id
         print("Telegram mesajı:", text)
-        asyncio.create_task(send_to_discord(text, telegram_msg_id=msg_id))  # DOĞRU SATIR
+        asyncio.create_task(send_to_discord(text, telegram_msg_id=msg_id))  # ✔️ Doğru kullanım
 
-def start_telegram_bot():
+async def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
-    app.run_polling()
+    await app.run_polling()  # ✔️ async fonksiyon içinde
