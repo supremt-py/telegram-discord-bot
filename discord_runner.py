@@ -12,20 +12,20 @@ telegram_to_discord = {}
 async def on_ready():
     print(f"Discord bot aktif: {bot.user}")
 
-async def send_to_discord(content, file_path=None):
+async def send_to_discord(text, file=None):
+    await bot.wait_until_ready()
     channel_id = int(os.getenv("DISCORD_CHANNEL_ID"))
     channel = bot.get_channel(channel_id)
+
     if not channel:
         print("Hedef Discord kanalı bulunamadı.")
         return
 
     try:
-        if file_path:
-            with open(file_path, "rb") as f:
-                discord_file = discord.File(f)
-                await channel.send(content, file=discord_file)
+        if file:
+            await channel.send(content=text, file=file)
         else:
-            await channel.send(content)
+            await channel.send(content=text)
     except Exception as e:
         print(f"Discord'a mesaj gönderilirken hata oluştu: {e}")
 
