@@ -30,4 +30,4 @@ async def send_to_discord(text, telegram_msg_id=None):
         print(f"Discord'a mesaj gönderilirken hata oluştu: {e}")
 
 async def start_discord_bot():
-    await bot.start(os.getenv("DISCORD_TOKEN"))
+    await bot.start(os.getenv("DISCORD_TOKEN"))  # ❗ .start() bir metod, çağrılmalı
