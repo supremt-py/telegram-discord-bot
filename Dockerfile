@@ -1,15 +1,17 @@
-FROM python:3.10-slim
+# Python imajı
+FROM python:3.10
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-RUN apt-get update && apt-get install -y build-essential
-
+# Çalışma dizinini ayarla
 WORKDIR /app
 
-COPY . /app/
+# Gerekli dosyaları kopyala
+COPY . /app
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Bağımlılıkları yükle
+RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "main.py"]
+# Ortam değişkenlerini destekle
+ENV PYTHONUNBUFFERED=1
+
+# Start komutu
+CMD ["python", "telegram_bot.py"]
