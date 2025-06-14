@@ -1,8 +1,10 @@
 import os
+import asyncio
 import discord
 from discord.ext import commands
 
 intents = discord.Intents.default()
+intents.messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 telegram_to_discord = {}
@@ -20,8 +22,7 @@ async def send_to_discord(text, telegram_msg_id=None):
         return
 
     try:
-        channel_id = int(channel_id)
-        channel = bot.get_channel(channel_id)
+        channel = bot.get_channel(int(channel_id))
 
         if not channel:
             print("Hedef Discord kanalı bulunamadı.")
@@ -34,3 +35,6 @@ async def send_to_discord(text, telegram_msg_id=None):
 
     except Exception as e:
         print(f"Discord'a mesaj gönderilirken hata oluştu: {e}")
+
+async def start_discord_bot():
+    await bot.start
