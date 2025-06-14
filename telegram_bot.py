@@ -40,6 +40,5 @@ async def start_telegram_bot():
     token = os.getenv("TELEGRAM_TOKEN")
     app = ApplicationBuilder().token(token).build()
     app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
+    await app.run_polling()  # Sadece bu satır yeterlidir
+
