@@ -3,12 +3,14 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 from discord_runner import send_to_discord
 
+import asyncio
+
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.channel_post:
         text = update.channel_post.text or update.channel_post.caption or "(Medyalı mesaj)"
         msg_id = update.channel_post.message_id
         print("Telegram mesajı:", text)
-        await send_to_discord(text, telegram_msg_id=msg_id)
+        asyncio.create_task(send_to_discord(text, telegram_msg_id=msg_id))
 
 def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
