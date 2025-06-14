@@ -14,6 +14,7 @@ async def on_ready():
 
 async def send_to_discord(text, telegram_msg_id=None):
     await bot.wait_until_ready()
+
     channel_id = os.getenv("DISCORD_CHANNEL_ID")
     if not channel_id:
         print("HATA: DISCORD_CHANNEL_ID tanımlı değil!")
@@ -28,9 +29,5 @@ async def send_to_discord(text, telegram_msg_id=None):
         msg = await channel.send(text)
         if telegram_msg_id:
             telegram_to_discord[telegram_msg_id] = msg.id
-
     except Exception as e:
         print(f"Discord'a mesaj gönderilirken hata oluştu: {e}")
-
-async def start_discord_bot():
-    await bot.start(os.getenv("DISCORD_TOKEN"))
