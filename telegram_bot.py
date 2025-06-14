@@ -1,7 +1,9 @@
 import os
+import asyncio  # ← BU SATIR EKLENECEK
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 from discord_runner import send_to_discord
+
 
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.channel_post:
