@@ -7,12 +7,7 @@ def forward_channel_post(update, context):
     if update.channel_post:
         text = update.channel_post.text or update.channel_post.caption or "(Medyalı mesaj)"
         print("Telegram mesajı:", text)
-        try:
-            asyncio.run_coroutine_threadsafe(send_to_discord(text), asyncio.get_running_loop())
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(send_to_discord(text))
+        asyncio.run(send_to_discord(text))  # direkt await edilen doğru kullanım
 
 def start_telegram_bot():
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
