@@ -1,23 +1,30 @@
 import os
-import asyncio
 import discord
+import asyncio
+from discord.ext import commands
 
-DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-DISCORD_CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID"))
+intents = discord.Intents.default()
+bot = commands.Bot(command_prefix="!", intents=intents)
 
-client = discord.Client(intents=discord.Intents.default())
+telegram_to_discord = {}
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f"Discord bot aktif: {client.user}")
+    print(f"Discord bot aktif: {bot.user}")
 
-async def send_to_discord(text):
-    await client.wait_until_ready()
-    try:
-        channel = client.get_channel(DISCORD_CHANNEL_ID)
-        if channel:
-            await channel.send(text)
-        else:
-            print("Hedef Discord kanalı bulunamadı.")
-    except Exception as e:
-        print(f"Discord'a mesaj gönderilirken hata oluştu: {e}")
+async def _send_discord_message(text, telegram_msg_id=None):
+    channel_id = int(os.getenv("DISCORD_CHANNEL_ID"))
+    channel = bot.get_channel(channel_id)
+    if not channel:
+        print("Hedef Discord kanalı bulunamadı.")
+        return
+
+    msg = await channel.send(text)
+    if telegram_msg_id:
+        telegram_to_discord[telegram_msg_id] = msg.id
+
+def send_to_discord(text, telegram_msg_id=None):
+    asyncio.create_task(_send_discord_message(text, telegram_msg_id))
+
+async def start_discord_bot():
+    await bot.start(os.getenv("DISCORD_TOKEN"))
