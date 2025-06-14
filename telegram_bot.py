@@ -60,5 +60,4 @@ def start_telegram_bot():
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
     app.add_handler(EditedMessageHandler(handle_edited_message))
-    app.add_handler(DeletedMessageHandler(handle_deleted_message))
     app.run_polling()
