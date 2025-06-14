@@ -5,8 +5,7 @@ from telegram.ext import (
     ApplicationBuilder,
     MessageHandler,
     ContextTypes,
-    filters,
-    EditedMessageHandler
+    filters
 )
 from discord_runner import send_to_discord, telegram_to_discord, bot
 from langdetect import detect
@@ -59,5 +58,4 @@ def start_telegram_bot():
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
-    app.add_handler(EditedMessageHandler(handle_edited_message))
     app.run_polling()
