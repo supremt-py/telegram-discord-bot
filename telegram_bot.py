@@ -9,14 +9,9 @@ async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYP
         print("Telegram mesajı:", text)
         await send_to_discord(text)
 
-async def start_telegram_bot():
+def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
-    
-    # Daha güvenli async başlatma adımları:
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
-    await app.updater.wait()
+    app.run_polling()
