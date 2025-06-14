@@ -4,14 +4,15 @@ from telegram.ext import Updater, MessageHandler, Filters
 from discord_runner import send_to_discord
 
 def forward_channel_post(update, context):
-    print("Update geldi:", update)
     if update.channel_post:
         text = update.channel_post.text or update.channel_post.caption or "(Medyalı mesaj)"
         print("Telegram mesajı:", text)
-
-        # Mevcut asyncio event loop'u al ve görev olarak çalıştır
-        loop = asyncio.get_event_loop()
-        loop.create_task(send_to_discord(text))
+        try:
+            asyncio.run_coroutine_threadsafe(send_to_discord(text), asyncio.get_running_loop())
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(send_to_discord(text))
 
 def start_telegram_bot():
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
