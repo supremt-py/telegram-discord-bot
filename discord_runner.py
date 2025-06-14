@@ -1,7 +1,6 @@
-# discord_runner.py
-import discord
-import asyncio
 import os
+import asyncio
+import discord
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
@@ -15,7 +14,5 @@ async def send_to_discord(text):
     if channel:
         await channel.send(text)
 
-def run_discord_bot():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(client.start(DISCORD_TOKEN))
+def start_discord_bot():
+    asyncio.run(client.start(DISCORD_TOKEN))
