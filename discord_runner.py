@@ -1,12 +1,12 @@
+import discord
 import os
 import asyncio
-import discord
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
-intents = discord.Intents.default()
-client = discord.Client(intents=intents)
+client = discord.Client(intents=discord.Intents.default())
+loop = asyncio.get_event_loop()
 
 async def send_to_discord(text):
     await client.wait_until_ready()
@@ -15,4 +15,4 @@ async def send_to_discord(text):
         await channel.send(text)
 
 def start_discord_bot():
-    asyncio.run(client.start(DISCORD_TOKEN))
+    loop.create_task(client.start(DISCORD_TOKEN))
