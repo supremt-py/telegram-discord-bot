@@ -12,11 +12,13 @@ async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYP
 async def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
     TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
-    app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
 
-    # run_polling() yerine bunu kullan
+    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+
+    # Sadece kanal mesajlarını dinle!
+    app.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, forward_channel_post))
+
     await app.initialize()
     await app.start()
     await app.updater.start_polling()
-    await app.updater.wait_until_shutdown()
+    await app.updater.idle()
