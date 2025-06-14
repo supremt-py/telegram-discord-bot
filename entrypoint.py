@@ -1,9 +1,13 @@
-import threading
+import asyncio
 from telegram_bot import start_telegram_bot
-from discord_runner import run_discord_bot
+from discord_runner import start_discord_bot
 
-# Discord botu ayrı thread'de
-threading.Thread(target=run_discord_bot).start()
+async def main():
+    # Discord botu arka planda başlasın
+    asyncio.create_task(start_discord_bot())
 
-# Telegram botu main thread'de
-start_telegram_bot()
+    # Telegram botu aynı event loop içinde
+    await start_telegram_bot()
+
+if __name__ == "__main__":
+    asyncio.run(main())
