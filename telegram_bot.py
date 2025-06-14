@@ -6,7 +6,6 @@ from telegram.ext import (
     MessageHandler,
     ContextTypes,
     filters,
-    DeletedMessageHandler,
     EditedMessageHandler
 )
 from discord_runner import send_to_discord, telegram_to_discord, bot
