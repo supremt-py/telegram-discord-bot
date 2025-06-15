@@ -15,37 +15,37 @@ async def forward_any_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print("Metin:", text)
 
     file = None
+    original_filename = None
+
     if msg.photo:
         print("Fotoğraf bulundu.")
         file = await msg.photo[-1].get_file()
+        original_filename = file.file_path.split('/')[-1] + ".jpg"
     elif msg.video:
         print("Video bulundu.")
         file = await msg.video.get_file()
+        original_filename = file.file_path.split('/')[-1] + ".mp4"
     elif msg.document:
         print("Belge bulundu.")
         file = await msg.document.get_file()
+        original_filename = msg.document.file_name  # gerçek dosya adı
+    elif msg.audio:
+        print("Ses bulundu.")
+        file = await msg.audio.get_file()
+        original_filename = msg.audio.file_name or "audio.ogg"
+    elif msg.voice:
+        print("Sesli mesaj bulundu.")
+        file = await msg.voice.get_file()
+        original_filename = "voice.ogg"
 
     if file:
         with tempfile.NamedTemporaryFile(delete=False) as temp:
             file_path = temp.name
         await file.download_to_drive(file_path)
-        print(f"Medya indirildi: {file_path}")
+        print(f"Medya indirildi: {file_path} → {original_filename}")
         print("Discord'a medya gönderiliyor...")
-        await send_to_discord(text, media_path=file_path)
+        await send_to_discord(text, media_path=file_path, original_filename=original_filename)
         os.remove(file_path)
     else:
         print("Sadece metin gönderiliyor...")
         await send_to_discord(text)
-
-async def start_telegram_bot():
-    print("Telegram bot başlatılıyor...")
-    token = os.getenv("TELEGRAM_TOKEN")
-    app = ApplicationBuilder().token(token).build()
-
-    app.add_handler(MessageHandler(filters.ALL, forward_any_post))
-
-    await app.initialize()
-    await app.start()
-
-    # ✅ ASIL EKSİK PARÇA: POLLING başlatılıyor
-    await app.updater.start_polling()
