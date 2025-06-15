@@ -5,36 +5,38 @@ from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filte
 from discord_runner import send_to_discord
 
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.channel_post:
-        print("Kanal postu alındı.")  # 🟢 İlk kontrol
+    msg = update.channel_post or update.message
+    if not msg:
+        print("Mesaj alınamadı.")
+        return
 
-        msg = update.channel_post
-        text = msg.caption or msg.text or "(Boş mesaj)"
-        print("Metin:", text)  # 🟢 Mesaj içeriğini logla
+    print("Mesaj alındı.")
+    text = msg.caption or msg.text or "(Boş mesaj)"
+    print("Metin:", text)
 
-        file = None
+    file = None
 
-        if msg.photo:
-            print("Fotoğraf bulundu.")  # 🟢 Fotoğraf varsa logla
-            file = await msg.photo[-1].get_file()
-        elif msg.video:
-            print("Video bulundu.")  # 🟢 Video varsa logla
-            file = await msg.video.get_file()
-        elif msg.document:
-            print("Belge bulundu.")  # 🟢 Belge varsa logla
-            file = await msg.document.get_file()
+    if msg.photo:
+        print("Fotoğraf bulundu.")
+        file = await msg.photo[-1].get_file()
+    elif msg.video:
+        print("Video bulundu.")
+        file = await msg.video.get_file()
+    elif msg.document:
+        print("Belge bulundu.")
+        file = await msg.document.get_file()
 
-        if file:
-            with tempfile.NamedTemporaryFile(delete=False) as temp:
-                file_path = temp.name
-            await file.download_to_drive(file_path)
-            print(f"Medya indirildi: {file_path}")  # 🟢 Medya indirildi mi?
-            print("Discord'a medya gönderiliyor...")
-            await send_to_discord(text, media_path=file_path)
-            os.remove(file_path)
-        else:
-            print("Sadece metin gönderiliyor...")
-            await send_to_discord(text)
+    if file:
+        with tempfile.NamedTemporaryFile(delete=False) as temp:
+            file_path = temp.name
+        await file.download_to_drive(file_path)
+        print(f"Medya indirildi: {file_path}")
+        print("Discord'a medya gönderiliyor...")
+        await send_to_discord(text, media_path=file_path)
+        os.remove(file_path)
+    else:
+        print("Sadece metin gönderiliyor...")
+        await send_to_discord(text)
 
 async def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
