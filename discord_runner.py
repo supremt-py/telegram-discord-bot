@@ -11,7 +11,7 @@ telegram_to_discord = {}
 async def on_ready():
     print(f"Discord bot aktif: {bot.user}")
 
-async def send_to_discord(text, telegram_msg_id=None):
+async def send_to_discord(text, telegram_msg_id=None, media_path=None):
     channel_id = int(os.getenv("DISCORD_CHANNEL_ID"))
     channel = bot.get_channel(channel_id)
     if not channel:
@@ -19,7 +19,12 @@ async def send_to_discord(text, telegram_msg_id=None):
         return
 
     try:
-        msg = await channel.send(text)
+        if media_path:
+            with open(media_path, "rb") as f:
+                discord_file = discord.File(f)
+                msg = await channel.send(content=text, file=discord_file)
+        else:
+            msg = await channel.send(content=text)
         if telegram_msg_id:
             telegram_to_discord[telegram_msg_id] = msg.id
     except Exception as e:
