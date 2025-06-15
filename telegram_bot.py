@@ -1,4 +1,3 @@
-# telegram_bot.py
 import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
@@ -17,7 +16,4 @@ async def start_telegram_bot():
     app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
     await app.initialize()
     await app.start()
-    
-    # ❗ Burası değişti
-    await app.bot.delete_webhook(drop_pending_updates=True)  # Çakışmayı önlemek için webhook'u iptal et
     await app.updater.start_polling()
