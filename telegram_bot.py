@@ -1,12 +1,13 @@
 import os
 import tempfile
 from telegram import Update
-from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
+from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters as tf
 from discord_runner import send_to_discord
 
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = update.channel_post
+    msg = update.effective_message
     if not msg:
+        print("Mesaj alınamadı (None).")
         return
 
     text = msg.text or msg.caption or "(Boş mesaj)"
@@ -38,7 +39,6 @@ async def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
     token = os.getenv("TELEGRAM_TOKEN")
     app = ApplicationBuilder().token(token).build()
-    app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
+    app.add_handler(MessageHandler(tf.UpdateType.CHANNEL_POST, forward_channel_post))
     await app.initialize()
-    await app.start()  # BU KALACAK
-    # await app.updater.start_polling() → BU SATIRI SİL (veya YORUM SATIRI YAP)
+    await app.start()
