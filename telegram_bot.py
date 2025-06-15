@@ -1,16 +1,16 @@
 import os
 import tempfile
 from telegram import Update
-from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters as tf
+from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 from discord_runner import send_to_discord
 
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = update.effective_message
+    msg = update.channel_post
     if not msg:
-        print("Mesaj alınamadı (None).")
+        print("Mesaj alınamadı.")
         return
 
-    text = msg.text or msg.caption or "(Boş mesaj)"
+    text = msg.caption or msg.text or "(Boş mesaj)"
     file = None
 
     if msg.photo:
@@ -19,10 +19,6 @@ async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYP
         file = await msg.video.get_file()
     elif msg.document:
         file = await msg.document.get_file()
-    elif msg.audio:
-        file = await msg.audio.get_file()
-    elif msg.voice:
-        file = await msg.voice.get_file()
 
     if file:
         with tempfile.NamedTemporaryFile(delete=False) as temp:
@@ -32,13 +28,16 @@ async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYP
         await send_to_discord(text, media_path=file_path)
         os.remove(file_path)
     else:
-        print("Sadece metin mesajı:", text)
+        print(f"Metin gönderiliyor: {text}")
         await send_to_discord(text)
 
 async def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
     token = os.getenv("TELEGRAM_TOKEN")
     app = ApplicationBuilder().token(token).build()
-    app.add_handler(MessageHandler(tf.UpdateType.CHANNEL_POST, forward_channel_post))
+
+    # KANAL MESAJLARINI DİNLEMEK İÇİN FİLTRE
+    app.add_handler(MessageHandler(filters.ChannelPost(), forward_channel_post))
+
     await app.initialize()
     await app.start()
