@@ -28,7 +28,7 @@ async def forward_any_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif msg.document:
         print("Belge bulundu.")
         file = await msg.document.get_file()
-        original_filename = msg.document.file_name  # gerçek dosya adı
+        original_filename = msg.document.file_name
     elif msg.audio:
         print("Ses bulundu.")
         file = await msg.audio.get_file()
@@ -50,6 +50,7 @@ async def forward_any_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print("Sadece metin gönderiliyor...")
         await send_to_discord(text)
 
+# ⬇️ Bu fonksiyonun burada olması şart (en son değil, yukarıda da olabilir ama görünür olsun)
 async def start_telegram_bot():
     print("Telegram bot başlatılıyor...")
     token = os.getenv("TELEGRAM_TOKEN")
