@@ -49,3 +49,12 @@ async def forward_any_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         print("Sadece metin gönderiliyor...")
         await send_to_discord(text)
+
+async def start_telegram_bot():
+    print("Telegram bot başlatılıyor...")
+    token = os.getenv("TELEGRAM_TOKEN")
+    app = ApplicationBuilder().token(token).build()
+    app.add_handler(MessageHandler(filters.ALL, forward_any_post))
+    await app.initialize()
+    await app.start()
+    await app.updater.start_polling()
