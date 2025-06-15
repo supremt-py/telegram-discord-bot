@@ -1,20 +1,17 @@
 import os
 import tempfile
-from telegram import Update, InputFile
+from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 from discord_runner import send_to_discord
-import aiohttp
 
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.channel_post
-
     if not msg:
         return
 
     text = msg.text or msg.caption or "(Boş mesaj)"
     file = None
 
-    # Medya kontrolü ve indirme
     if msg.photo:
         file = await msg.photo[-1].get_file()
     elif msg.video:
@@ -27,7 +24,6 @@ async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYP
         file = await msg.voice.get_file()
 
     if file:
-        # Geçici dosya oluştur
         with tempfile.NamedTemporaryFile(delete=False) as temp:
             file_path = temp.name
         await file.download_to_drive(file_path)
@@ -44,5 +40,5 @@ async def start_telegram_bot():
     app = ApplicationBuilder().token(token).build()
     app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
     await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
+    await app.start()  # BU KALACAK
+    # await app.updater.start_polling() → BU SATIRI SİL (veya YORUM SATIRI YAP)
