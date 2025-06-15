@@ -7,11 +7,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 telegram_to_discord = {}
 
-@bot.event
-async def on_ready():
-    print(f"Discord bot aktif: {bot.user}")
-
-async def send_to_discord(text, telegram_msg_id=None, media_path=None):
+async def send_to_discord(text, telegram_msg_id=None, media_path=None, original_filename=None):
     channel_id = int(os.getenv("DISCORD_CHANNEL_ID"))
     channel = bot.get_channel(channel_id)
     if not channel:
@@ -20,12 +16,8 @@ async def send_to_discord(text, telegram_msg_id=None, media_path=None):
 
     try:
         if media_path:
-            # 🔧 Uzantısı doğru olan bir dosya adı üretelim
-            ext = ".jpg" if media_path.endswith(".jpg") else ".png"  # varsayalım görsel
-            filename = os.path.basename(media_path)
-            if not filename.endswith(ext):
-                filename += ext
-
+            # Gerçek dosya adını kullan, yoksa varsayılan ver
+            filename = original_filename or os.path.basename(media_path)
             with open(media_path, "rb") as f:
                 discord_file = discord.File(f, filename=filename)
                 msg = await channel.send(content=text, file=discord_file)
@@ -36,7 +28,6 @@ async def send_to_discord(text, telegram_msg_id=None, media_path=None):
             telegram_to_discord[telegram_msg_id] = msg.id
     except Exception as e:
         print(f"Discord'a mesaj gönderilirken hata oluştu: {e}")
-
 
 async def start_discord_bot():
     await bot.start(os.getenv("DISCORD_TOKEN"))
