@@ -7,8 +7,7 @@ from discord_runner import send_to_discord
 async def forward_channel_post(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.channel_post
     if not msg:
-        print("Mesaj alınamadı.")
-        return
+        return  # Sadece kanal mesajlarını işle
 
     text = msg.caption or msg.text or "(Boş mesaj)"
     file = None
@@ -36,8 +35,8 @@ async def start_telegram_bot():
     token = os.getenv("TELEGRAM_TOKEN")
     app = ApplicationBuilder().token(token).build()
 
-    # KANAL MESAJLARINI DİNLEMEK İÇİN FİLTRE
-    app.add_handler(MessageHandler(filters.ChannelPost(), forward_channel_post))
+    # ALL filtrele, ama sadece channel_post kontrol et
+    app.add_handler(MessageHandler(filters.ALL, forward_channel_post))
 
     await app.initialize()
     await app.start()
